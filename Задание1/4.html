@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="4.css">
+</head>
+<body>
+    <svg width="500" height="500">
+        <line style="stroke:rgb(0, 0, 0); stroke-width: 2"
+        x1 ="0" y1="0"
+        x2="0" y2="200" />
+
+        <line style = "stroke:rgb(0, 0, 0); stroke-width: 2"
+        x1="0" y1="200"
+        x2 ="300" y2="200" />
+
+        <polyline 
+        style="fill: none; stroke-width: 3; stroke:rgb(200, 0, 0)"
+        points = "0,200 30,100 60,150" />
+    </svg>
+    <button class="btn btn-cl">Нажмите сюда</button>
+    <div id="result"></div>
+    <script>
+        const screen = window.innerWidth;
+        const scr = window.innerHeight;
+        console.log(screen, scr);
+
+        const btn = document.querySelector('.btn-cl');
+        const result = document.getElementById('result');
+
+        btn.addEventListener('click', () => {
+            result.textContent = `Ширина экрана: ${screen}
+            Высота экрана: ${scr}`;
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="5.css">
+</head>
+<body>
+    <main id="chat">
+        <div class="info_out"></div>
+        <div class="chat_out"></div>
+        <div class="chat_input">
+            <input type="text" placeholder="Введите текст">
+            <button class="btn btn_send">Отправить</button>
+            <button class="btn btn_geo">Геолокация</button>
+            <p id="status"></p>
+            <p id="status_error"></p>
+            <a id="map_link" target="_blank"></a>
+        </div>
+<script>
+    const wsUri = "wss://echo-ws-service.herokuapp.com";
+
+const outInfo = document.querySelector('.info_out');
+const outChat = document.querySelector('.chat_out');
+const input = document.querySelector("input");
+
+let web = new WebSocket(wsUri);
+
+web.onopen = () => {
+    outInfo.innerText = "соединение установлено";
+}
+
+web.onmessage = (event) => {
+    writeChat(event.data, true);
+}
+
+web.onerror = () => {
+    outInfo.innerText = "Не удалось установить соединение";
+}
+
+function click() {
+    if (!input.value) return;
+    web.send(input.value);
+    writeChat(input.value, false);
+    input.value === "";
+}
+
+function writeChat(message, isRecieved) {
+    let messageHTML = `<div class="${isRecieved? "recieved" : "sent"}">${message}</div>`;
+    outChat.innerHTML += messageHTML;
+}
+
+    const btn = document.querySelector('.btn_send');
+    btn.addEventListener("click", click);
+
+    const status = document.getElementById("status");
+    const statusError = document.getElementById("status_error");
+    const map = document.getElementById("map_link");
+
+    const error = () => {
+        statusError.textContent = `Не возможно определить ваше местоположение`
+    }
+
+    const success = (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        status.textContent = `Ширина: ${latitude},
+        Долгота: ${longitude}`;
+        map.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+map.textContent = "Ссылка на карту";
+    }
+  function geoloc() {
+        map.href = "";
+        map.textContent = "";
+
+        if(!navigator.geolocation) {
+            status.textContent = "Geolocation на вашем устройстве"
+        }else {
+            status.textContent = "Определение местоположения..."
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+    }
+
+    const btn_2 = document.querySelector(".btn_geo");
+    btn_2.addEventListener("click", geoloc);
+</script>
+</body>
+</html>
